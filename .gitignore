@@ -1,0 +1,5 @@
+.DS_Store
+!01-COPYDIR
+01-COPYDIR/.DS_Store
+!02-SCRIPTS
+!.gitignore
