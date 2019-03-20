@@ -1,14 +1,22 @@
 Package: eprimeParser
-Title: What the Package Does (One Line, Title Case)
+Title: E-prime data processing pipeline
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "James Michael",
+           family = "Roe",
            role = c("aut", "cre"),
-           email = "first.last@example.com")
-Description: What the package does (one paragraph).
+           email = "j.m.roe@psykologi.uio.no")
+Description: This package contains functions to process the eprime data for LCBC. The functions are adaptations of scripts James Michael Roe made, that Athanasia Monika Mowinckel converted.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Depends: R (>= 2.10)
 LazyData: true
 Imports: 
-    readr
+    readr,
+    rprime,
+    lubridate,
+    dplyr,
+    magrittr,
+    purrr,
+    crayon
+RoxygenNote: 6.1.1

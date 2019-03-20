@@ -3,13 +3,14 @@
 #-------- 
 basedir=$1
 copydir=${basedir}/$2
-task=$3
-copy_etxts=$4
-copy_edats=$5
+out_dir=$3
+task=$4
+copy_etxts=$5
+copy_edats=$6
 #-------- 
 
-	outdir=$basedir/$task
-	
+	outdir=$out_dir/$task
+
 	copy_etxt=$outdir/5-COPY_etxt
 	copy_edat=$outdir/6-COPY_edat
 
@@ -25,29 +26,7 @@ copy_edats=$5
 		exit 1
 	fi
 
-	dirstruct="1-ID_dataframes \
-	2-COMPLETE_etxt \
-	3-COMPLETE_edat \
-	4-ERROR_check \
-	5-COPY_etxt \
-	6-COPY_edat \
-	7-FATAL \
-	8-LOGS \
-	"
-
 	filelog=$outdir/ALL_FILES.log
-
-	if [ ! -d "$outdir" ]; then
-		echo "creating ${outdir}"
-		mkdir ${outdir}
-	fi
-
-	for d in $dirstruct; do
-		if [ ! -d $outdir/$d ]; then
-			echo "creating ${outdir}/${d}"
-			mkdir $outdir/$d
-		fi
-	done
 
 	if [ ! -e "$filelog" ]; then
 		echo "creating ${filelog}"
@@ -213,7 +192,7 @@ copy_edats=$5
 				dest_fatal=$outdir/7-FATAL/fatal_${subcheck}${strcut}
 				if [ ! -d "$dest_fatal" ]; then
 					echo "creating ${dest_fatal}"
-					mkdir $dest_fatal
+					mkdir -p $dest_fatal
 				fi
 
 				

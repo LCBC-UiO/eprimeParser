@@ -1,94 +1,108 @@
-# LCBC Eprime Parser
 
-James M Roe
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-This Hard Disk should be exclusively used for retrieving data from the computerised Eprime tasks we run here at LCBC.
+# LCBC eprimeParser <img src="man/figures/hex.png" align="right" alt="" width="120" />
+
+The goal of eprimeParser is to …
+
+## Installation
+
+You can install the released version of eprimeParser from
+[github](https://github.org) with:
+
+``` r
+devtools::install_.packages_github("LCBC-UiO/eprimeParser")
+```
+
+# Original description by James Michael Roe, before package conversion
+
+This Hard Disk should be exclusively used for retrieving data from the
+computerised Eprime tasks we run here at LCBC.
 
 To automate this process, the directory requires a set structure
 
 The only files and folders here should be:
 
+## — 01-COPYDIR
 
-## --- 01-COPYDIR 
-			-- TestRoom1
-			-- TestRoom2
-			-- Laptop
+``` 
+        -- TestRoom1
+        -- TestRoom2
+        -- Laptop
+```
 
-## --- 02-SCRIPTS
-			-- 02-find_eprime_files.sh
-			-- 03-LCBC_eprime_parser.R
-			-- 04-LCBC_error_checker.R
+## — 02-SCRIPTS
 
-## --- MOAS.Rdata 
-(replace with newest MOAS, will be overwritten by MOAS_safe.Rdata)
+``` 
+        -- 02-find_eprime_files.sh
+        -- 03-LCBC_eprime_parser.R
+        -- 04-LCBC_error_checker.R
+```
 
-## --- README
-(Pre-existing)
-## --- $task
-## --- $task...
-(Created by script)
+## — MOAS.Rdata
 
+(replace with newest MOAS, will be overwritten by MOAS\_safe.Rdata)
 
+## — README
+
+(Pre-existing) \#\# — $task \#\# — $task… (Created by script)
 
 # Steps:
 
 **1) Copy a directory into 01-COPYDIR/$location-copied-from**
 
-- It does not matter how high up the directory is in the tree, so long as it contains a subdirectory at some point containing .edat and .txt files created by Eprime
+  - It does not matter how high up the directory is in the tree, so long
+    as it contains a subdirectory at some point containing .edat and
+    .txt files created by Eprime
 
+**2) open 02-find\_eprime\_files.sh**
 
-**2) open 02-find_eprime_files.sh**
+  - change $task as necessary
+  - change copydir to correspond with *location-copied-from* (NB\! upper
+    directory in tree should be *location* or informative in some way)
+  - type *" 02-find\_eprime\_files.sh "* into the terminal on a
+    unix-based system
 
-- change $task as necessary
-- change copydir to correspond with *location-copied-from* (NB! upper directory in tree should be *location* or informative in some way)
-- type *" 02-find_eprime_files.sh "* into the terminal on a unix-based system
+**3) open 03-LCBC\_eprime\_parser.R**
 
+  - change path/task as needed
+  - “source” script within Rstudio to run OR type *" Rscript
+    03-LCBC\_eprime\_parser.R "* in terminal
 
-**3) open 03-LCBC_eprime_parser.R**
+(*Errors are produced if saved ID does not match with MOAS ID on
+Test\_Date. Thus, for a file to “process without error”: ID and test
+date corresponds with MOAS ID and Test\_Date*)
 
-- change path/task as needed
-- "source" script within Rstudio to run OR type *" Rscript 03-LCBC_eprime_parser.R "* in terminal
+**4) open 04-LCBC\_error\_checker.R** - change path/task as needed -
+“source” script within Rstudio to run OR type *"
+04-LCBC\_error\_checker.R "* in terminal (though Rstudio is recommended
+here). This will run an interactive program that is dependent on user
+input to correct the processing errors.
 
-(*Errors are produced if saved ID does not match with MOAS ID on Test_Date.
-Thus, for a file to "process without error": ID and test date corresponds with MOAS ID and Test_Date*)
+## ————– DIRECTORY STRUCTURE PER TASK ————–
 
-**4) open 04-LCBC_error_checker.R**
-- change path/task as needed
-- "source" script within Rstudio to run OR type *" 04-LCBC_error_checker.R "* in terminal (though Rstudio is recommended here). This will run an interactive program that is dependent on user input to correct the processing errors. 
+**–\> 1-ID\_dataframes** data .csv file per subID saved here (see
+COMPLETE.log)
 
+**–\> 2-COMPLETE\_etxt** etxt files that process without error moved
+here
 
+**–\> 3-COMPLETE\_edat** edat files that match filename with processed
+etxt file moved here
 
+**–\> 4-ERROR\_check** etxt files and linked edats that do not process
+successfully moved to new dir here (see ERROR-check.log)
 
-## -------------- DIRECTORY STRUCTURE PER TASK --------------
+**–\> 5-COPY\_etxt** etxt files to process
 
-**--> 1-ID_dataframes**
-data .csv file per subID saved here (see COMPLETE.log)
+**–\> 6-COPY\_edat** edat files yet to be linked
 
-**--> 2-COMPLETE_etxt**
-etxt files that process without error moved here
+**–\> 7-FATAL** etxt files/edats with irrecoverable data loss (see
+FATAL.log)
 
-**--> 3-COMPLETE_edat**
-edat files that match filename with processed etxt file moved here
+**–\> 8-LOGS** log per etxt
 
-**--> 4-ERROR_check**
-etxt files and linked edats that do not process successfully moved to new dir here (see ERROR-check.log)
-
-**--> 5-COPY_etxt**
-etxt files to process
-
-**--> 6-COPY_edat**
-edat files yet to be linked
-
-**--> 7-FATAL**
-etxt files/edats with irrecoverable data loss (see FATAL.log)
-
-**--> 8-LOGS**
-log per etxt
-
-
-**ALL_FILES / COMPLETE / ERROR-check / FATAL / SESSION.log
---------------------------------------------------------------(full script output)**
-
-
+**ALL\_FILES / COMPLETE / ERROR-check / FATAL / SESSION.log
+————————————————————–(full script output)**
 
 Questions to James
