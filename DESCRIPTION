@@ -1,11 +1,15 @@
 Package: eprimeParser
 Title: E-prime data processing pipeline
-Version: 0.0.0.9000
-Authors@R: 
+Version: 0.0.1.0
+Authors@R: c(
+    person("Athanasia Mo", "Mowinckel", 
+        email = "a.m.mowinckel@psykologi.uio.no", 
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0002-5756-0223"),
     person(given = "James Michael",
            family = "Roe",
-           role = c("aut", "cre"),
-           email = "j.m.roe@psykologi.uio.no")
+           role = c("aut"),
+           email = "j.m.roe@psykologi.uio.no"))
 Description: This package contains functions to process the eprime data for LCBC. The functions are adaptations of scripts James Michael Roe made, that Athanasia Monika Mowinckel converted.
 License: MIT + file LICENSE
 Encoding: UTF-8
