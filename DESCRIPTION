@@ -20,8 +20,10 @@ Imports:
     purrr,
     crayon,
     rio,
-    gcalendar,
     gcalendr
 RoxygenNote: 6.1.1
 Suggests: 
     testthat (>= 2.1.0)
+Remotes: andrie/gcalendr
+URL: https://github.com/LCBC-UiO/eprimeParser
+BugReports: https://github.com/LCBC-UiO/eprimeParser/issues
