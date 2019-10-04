@@ -1,5 +1,5 @@
 Package: eprimeParser
-Title: E-prime data processing pipeline
+Title: LCBC E-prime data processing pipeline
 Version: 0.0.1.0
 Authors@R: c(
     person("Athanasia Mo", "Mowinckel", 
