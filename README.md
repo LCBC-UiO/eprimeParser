@@ -33,6 +33,11 @@ You can install the released version of eprimeParser from
 remotes::install_packages_github("LCBC-UiO/eprimeParser")
 ```
 
+## Documentation
+
+Current package documentation can be found on the [package
+site](https://lcbc-uio.github.io/eprimeParser/).
+
 # Procedure
 
 The functions in this package require a connection to the LCBC

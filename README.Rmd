@@ -35,6 +35,8 @@ You can install the released version of eprimeParser from [github](https://githu
 remotes::install_packages_github("LCBC-UiO/eprimeParser")
 ```
 
+## Documentation
+Current package documentation can be found on the [package site](https://lcbc-uio.github.io/eprimeParser/).
 
 # Procedure
 The functions in this package require a connection to the LCBC lagringshotell at the University of Oslo, and that you know the paths to the following data:  
