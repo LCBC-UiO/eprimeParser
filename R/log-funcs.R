@@ -1,81 +1,135 @@
-parser_error_log <- function(SEARCHKEY, errordir,
-                             lifecyclelog, sub, logs,
-                             checkMOASdate, checkMOAS
-                             ){
-  #---log error
-  errorinfo = paste(SEARCHKEY, basename(errordir), sep = " ; " )
-  cat(errorinfo, file = paste(errordir, "INFO-efile.csv", sep = "/"), append = T, sep = "\n")
-  
-  #---copy session log
-  file.copy(lifecyclelog, paste(errordir, "session.log", sep="/"))
-  
-  #---write alternatives
-  utils::write.csv(checkMOASdate, paste(errordir, "DATE-check.csv", sep = "/"))
-  utils::write.csv(checkMOAS, paste(errordir, "ID-check.csv", sep = "/"))
-  
-  #---write PRECLEAN data
-  datafile = paste0(sub$subPC, "_PRECLEAN-data.csv")
-  utils::write.csv(sub$subcsv, paste(errordir, datafile, sep = "/"), row.names = F)
-  
-  #---update logs
-  msg = paste("updating ERROR-check.log:", basename(errordir))
-  log_it(msg, type = "error", logs = list(logs$sessionlog,
-                                          lifecyclelog,
-                                          logs$errorlog))
-  
-  # msg = paste("updating ALL_FILES.log:", basename(errordir))
-  # cat("\n",msg)
-  # cat(msg, file = sessionlog, append = T, sep = "\n")
-  # cat(msg, file = lifecyclelog, append = T, sep = "\n")
-  # 
-  # ALLlines = readLines(filelog)
-  # whichline = grep(SEARCHKEY, ALLlines)
-  # line = ALLlines[whichline]
-  # 
-  # msg = paste0(line, " ; ", basename(errordir))
-  # newloglines = ALLlines
-  # newloglines[whichline] = msg
-  # #--overwrite
-  # writeLines(newloglines, filelog) 
+
+# Add information to the parser status.log
+add_log_info <- function(data, condition, status_string, comment_string){
+  condition <- dplyr::enquo(condition)
+  dplyr::mutate(data,
+                status = ifelse(!!condition, status_string, status),
+                comment = ifelse(!!condition, comment_string, comment)
+  )
 }
 
-#' Set up logs for eprime parser
-#' 
-#' Initiates and creates paths to necessary
-#' log-files for the E-prime parser
-#'
-#' @param path Path to where the logs should be
-#'
-#' @return list of log paths
-#' @export
-eprime_setup_logs <- function(path){
-  logs <- as.list(paste(path, 
-                        c("COMPLETE.log", "ERROR-check.log",
-                          "SESSION.log", "ALL_FILES.log"),
-                        sep = "/"))
-  names(logs) = c("donelog", "errorlog", "sessionlog", "filelog")  
-  
-  
-  # SESSION.log ----
-  file.create(logs$sessionlog)
-  
-  #---COMPLETE.log
-  loglines <- check_create_log(logs$donelog)
-  
-  #---ERRORS.log
-  errorlines <- check_create_log(logs$errorlog)
-  
-  list(logs = logs, errorlines = errorlines, loglines = loglines)
-}
-
-
-check_create_log <- function(file){
-  if (file.exists(file)) {
-    tmp = readLines(file)
-  } else {
-    file.create(file)
-    tmp = readLines(file)
+write_status <- function(ff_df, logs){
+  status <- if(file.exists(logs$status)){
+    in_process <- suppressMessages(readr::read_tsv(logs$status) )
+    
+    suppressMessages(
+      dplyr::bind_rows(
+        in_process, 
+        ff_df %>% readr::type_convert()
+      )
+    )
+    
+  }else{
+    ff_df
   }
-  tmp
+  readr::write_tsv(status, path = logs$status, na="")
 }
 
+
+update_status <- function(status_path, condition, status_string, comment_string){
+  condition <- dplyr::enquo(condition)
+  
+  stat <- read_tsv(status_path, 
+                   col_types = cols(
+                     id = col_double(),
+                     files_orig = col_character(),
+                     date = col_character(),
+                     time = col_character(),
+                     nlines = col_double(),
+                     status = col_character(),
+                     comment = col_character(),
+                     processed_date = col_character(),
+                     files_date_time = col_character(),
+                     files_orig_path = col_character()
+                   )) %>% 
+    dplyr::mutate(
+      status = ifelse(!!condition, status_string, status),
+      comment = ifelse(!!condition, comment_string, comment)
+    ) %>% 
+    write_tsv(path = status_path, na = "")
+}
+
+update_status_filename <- function(status_path, condition, files_date_time_new){
+  condition <- dplyr::enquo(condition)
+  
+  ss <- strsplit(files_date_time_new, "_")[[1]]
+
+  stat <- read_tsv(status_path, 
+                   col_types = cols(
+                     id = col_double(),
+                     files_orig = col_character(),
+                     date = col_character(),
+                     time = col_character(),
+                     nlines = col_double(),
+                     status = col_character(),
+                     comment = col_character(),
+                     processed_date = col_character(),
+                     files_date_time = col_character(),
+                     files_orig_path = col_character()
+                   )) %>% 
+    dplyr::mutate(
+      id = ifelse(!!condition, gsub("sub-", "", ss[1]), id),
+      files_date_time = ifelse(!!condition, files_date_time_new, files_date_time)
+    ) %>% 
+    write_tsv(path = status_path, na = "", quote_escape = FALSE)
+}
+
+# Verbose message functions ----
+
+# Function to create custom log entries that also print out messages to the console.
+log_it <- function(string, type = "message", logs = NULL, quietly = FALSE){
+  
+  if(any(class(string) %in% "data.frame")){
+    for(k in logs){
+      cat(paste0(colnames(string), collapse='\t'), file = k, append = T, sep = '\n')
+      cat(apply(string,1,paste0, collapse='\t'), file = k, append = T, sep = '\n')
+    }
+  }else if(class(string) == "character"){
+    string <- paste0(string, "  ")
+    
+    if(!is.null(logs)){
+      # add to logs
+      t <- switch(type, 
+                  "message" = string,
+                  "warning" = paste0(type, ": ", string),
+                  "error" =   paste0(type, ": ", string),
+                  "ok" = string
+      )
+      
+      lapply(logs, function(x) 
+        cat(t, file = x, append = T, sep = "\n")
+      )
+    }
+    
+    if(quietly == FALSE){
+      # Print it to console
+      msg <- switch(type,
+                    "message" = string,
+                    "warning" = warn(string),
+                    "error" =   err(string),
+                    "ok" = ok(string)
+      )
+      cat(paste0(msg, "\n\n"))
+    }
+  }  
+}  
+
+warn <- function(string){
+  cat(crayon::yellow(string))
+}
+
+err <- function(string){
+  cat(crayon::red(string))
+}
+
+note <- function(string){
+  cat(string)
+}
+
+ok <- function(string){
+  cat(crayon::green(string))
+}
+
+
+
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("status"))

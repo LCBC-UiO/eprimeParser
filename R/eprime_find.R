@@ -1,26 +1,55 @@
 #' Find eprime files
 #'
-#' @param in_dir Directory with E-prime files
-#' @param data_dir Sub-dir of base that has the data
-#' @param out_dir directory to output the data to
-#' @param task Which task, one of ["Antisaccade", "n-back", "Attention"]
-#' @param copy_etxts binary logical, 1 to copy the txt's
-#' @param copy_edats binary logical, 1 to copy the edat's.
-#'
+#' @inheritParams eprime_parse
+#' @param paths list of paths from [\code{eprime_setup_dirs}]
+#' @param logs list of paths from [\code{eprime_setup_logs}]
+#' 
 #' @export
-#'
-eprime_find <- function(in_dir = "~/LCBC/Projects/Cross_projects/computer_tasks",
-                        data_dir = "C_Eprime_Testrom1", #must have /LOCATION (i.e.TestRoom1/TestRoom2)
-                        out_dir = "~/LCBC/Users/athanasm_mo/",
-                        task = "Antisaccade",
-                        copy_etxts=1,
-                        copy_edats=1){
-
-  # script <- system.file("find_eprime_files.sh", package = "eprimeParser")
-  script <- "R/find_eprime_files.sh"
+#' @importFrom dplyr bind_rows mutate filter
+#' @importFrom readr guess_encoding read_tsv write_tsv
+eprime_find <- function(in_dir,
+                        task,
+                        paths, 
+                        logs,
+                        quietly = FALSE){
   
-  system(
-    paste("sh", script, in_dir, data_dir, out_dir, task, copy_etxts, copy_edats)
-    )
+  log_it(paste("Searching for", task, "files in", in_dir, "."),
+         type = "message", logs = list(logs$session), quietly = quietly)
   
+  # Files ----
+  # Find all txt files in in_dir for this task
+  ff <- list.files(in_dir, 
+                   pattern=paste0(task,".*txt"), 
+                   recursive = T, 
+                   full.names = T) 
+  
+  if(length(ff) == 0){
+    msg <- paste0("No files found for task '", task, "'. Please check if this is a task with data.")
+    log_it(msg, type = "error", logs = logs$session, quietly)
+    stop_quietly()
+  }
+  
+  # Initiate the txt files, and remove _known_ untrue files
+  # And duplicates from copying files around
+  ff_df <-  etxt_initiate(ff, task = task, in_dir = in_dir) %>% 
+    filter(!grepl("Copy", files_orig),
+           !grepl("/old/", files_orig_path),
+           id != 9999999, # Tests ids
+           id != 1, # Tests ids
+           !duplicated(files_date_time) # File duplications from moving files around
+           )
+  
+  # Start running checks ----
+  # Check against existing log
+  ff_df <- check_existing(ff_df, logs, quietly)
+  
+  write_status(ff_df, logs)
+  
+  ff_df
 }
+
+
+
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("files_orig", "files_orig_path",
+                                                        "id", "files_date_time"))
+

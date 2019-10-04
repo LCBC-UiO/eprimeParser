@@ -1,5 +1,13 @@
 ^README\.Rmd$
 ^data-raw$
+^docs$
 ^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^~/\.athanasiamo@gmail\.com_google_apis_auth\.RDS$
+^\.Rhistory$
+^\.travis\.yml$
+^\.covrignore$
+^_pkgdown\.yml$
+^pkgdown$
+^\.circleci/config\.yml$

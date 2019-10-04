@@ -4,23 +4,18 @@
 \alias{eprime_find}
 \title{Find eprime files}
 \usage{
-eprime_find(in_dir = "~/LCBC/Projects/Cross_projects/computer_tasks",
-  data_dir = "C_Eprime_Testrom1",
-  out_dir = "~/LCBC/Users/athanasm_mo/", task = "Antisaccade",
-  copy_etxts = 1, copy_edats = 1)
+eprime_find(in_dir, task, paths, logs, quietly = FALSE)
 }
 \arguments{
 \item{in_dir}{Directory with E-prime files}
 
-\item{data_dir}{Sub-dir of base that has the data}
-
-\item{out_dir}{directory to output the data to}
-
 \item{task}{Which task, one of ["Antisaccade", "n-back", "Attention"]}
 
-\item{copy_etxts}{binary logical, 1 to copy the txt's}
+\item{paths}{list of paths from [\code{eprime_setup_dirs}]}
 
-\item{copy_edats}{binary logical, 1 to copy the edat's.}
+\item{logs}{list of paths from [\code{eprime_setup_logs}]}
+
+\item{quietly}{logical if log text should be printed in the console}
 }
 \description{
 Find eprime files
