@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![CircleCI build status](https://circleci.com/gh/LCBC-UiO/LCBC-Eprime-Parser/.svg?style=svg)](https://circleci.com/gh/LCBC-UiO/eprimeParser/)
+**CircleCI build:** [![CircleCI build status](https://circleci.com/gh/LCBC-UiO/eprimeParser.svg?style=svg&circle-token=95b5ef8cfafcca1062c91538ba2ec75dbeb199a2)](https://circleci.com/gh/LCBC-UiO/eprimeParser)
 <!-- badges: end -->
   
 The goal of {eprimeParser} is to find, sort and store parset files from LCBC's eprime experiments. 
