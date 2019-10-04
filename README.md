@@ -7,6 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CircleCI build
+status](https://circleci.com/gh/LCBC-UiO/LCBC-Eprime-Parser/.svg?style=svg)](https://circleci.com/gh/LCBC-UiO/LCBC-Eprime-Parser/)
 <!-- badges: end -->
 
 The goal of {eprimeParser} is to find, sort and store parset files from
